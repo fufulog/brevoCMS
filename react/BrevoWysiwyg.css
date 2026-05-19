@@ -1,0 +1,233 @@
+/* BrevoWysiwyg.css — Styles for the React WYSIWYG editor component */
+
+/* ── Container ── */
+.brevo-wysiwyg {
+  --brevo-bg: #1a1a2e;
+  --brevo-surface: #16213e;
+  --brevo-border: #2a2a4a;
+  --brevo-border-focus: #6366f1;
+  --brevo-text: #e2e8f0;
+  --brevo-text-muted: #94a3b8;
+  --brevo-accent: #6366f1;
+  --brevo-accent-hover: #818cf8;
+  --brevo-toolbar-bg: #0f1629;
+  --brevo-btn-hover: #2a2a4a;
+  --brevo-btn-active: #3730a3;
+  --brevo-radius: 8px;
+  --brevo-font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  font-family: var(--brevo-font);
+  border: 1.5px solid var(--brevo-border);
+  border-radius: var(--brevo-radius);
+  overflow: hidden;
+  background: var(--brevo-bg);
+  transition: border-color 0.2s ease;
+}
+
+.brevo-wysiwyg--focused {
+  border-color: var(--brevo-border-focus);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+
+.brevo-wysiwyg--disabled {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* ── Toolbar ── */
+.brevo-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  padding: 6px 8px;
+  background: var(--brevo-toolbar-bg);
+  border-bottom: 1px solid var(--brevo-border);
+}
+
+.brevo-toolbar__group {
+  display: flex;
+  gap: 2px;
+}
+
+.brevo-toolbar__divider {
+  width: 1px;
+  height: 22px;
+  background: var(--brevo-border);
+  margin: 0 4px;
+}
+
+.brevo-toolbar__spacer {
+  flex: 1;
+}
+
+/* ── Buttons ── */
+.brevo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--brevo-text-muted);
+  font-family: var(--brevo-font);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.brevo-btn:hover {
+  background: var(--brevo-btn-hover);
+  color: var(--brevo-text);
+}
+
+.brevo-btn--active {
+  background: var(--brevo-btn-active);
+  color: #fff;
+}
+
+.brevo-btn--accent {
+  color: var(--brevo-accent);
+  font-weight: 500;
+}
+
+.brevo-btn--accent:hover {
+  color: var(--brevo-accent-hover);
+  background: rgba(99, 102, 241, 0.12);
+}
+
+.brevo-btn--source {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.brevo-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ── Dropdowns ── */
+.brevo-dropdown {
+  position: relative;
+}
+
+.brevo-dropdown__menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 160px;
+  padding: 4px;
+  background: var(--brevo-surface);
+  border: 1px solid var(--brevo-border);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  animation: brevo-dropdown-in 0.12s ease-out;
+}
+
+.brevo-dropdown__menu--variables {
+  min-width: 260px;
+}
+
+@keyframes brevo-dropdown-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.brevo-dropdown__menu button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 7px 10px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--brevo-text);
+  font-family: var(--brevo-font);
+  font-size: 13px;
+  cursor: pointer;
+  text-align: left;
+  gap: 8px;
+}
+
+.brevo-dropdown__menu button:hover {
+  background: var(--brevo-btn-hover);
+}
+
+.brevo-var-label {
+  flex: 1;
+}
+
+.brevo-var-key {
+  font-size: 11px;
+  color: var(--brevo-accent);
+  background: rgba(99, 102, 241, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+/* ── Editor ── */
+.brevo-editor-wrapper {
+  background: var(--brevo-bg);
+}
+
+.brevo-editor {
+  min-height: 320px;
+  max-height: 600px;
+  overflow-y: auto;
+  padding: 20px 24px;
+  color: var(--brevo-text);
+  font-size: 15px;
+  line-height: 1.7;
+  outline: none;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+.brevo-editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--brevo-text-muted);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.brevo-editor h1 { font-size: 1.8em; font-weight: 700; margin: 0.4em 0; }
+.brevo-editor h2 { font-size: 1.4em; font-weight: 600; margin: 0.4em 0; }
+.brevo-editor h3 { font-size: 1.15em; font-weight: 600; margin: 0.4em 0; }
+.brevo-editor a { color: var(--brevo-accent-hover); text-decoration: underline; }
+.brevo-editor ul,
+.brevo-editor ol { padding-left: 1.6em; }
+
+/* ── Source ── */
+.brevo-source {
+  width: 100%;
+  min-height: 320px;
+  max-height: 600px;
+  padding: 16px 20px;
+  border: none;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  resize: vertical;
+  outline: none;
+  tab-size: 2;
+  box-sizing: border-box;
+}
+
+.brevo-source::placeholder {
+  color: #484f58;
+}
