@@ -11,7 +11,7 @@ It provides an out-of-the-box system that syncs metadata from Brevo SMTP templat
 ### 1. Install the SDK
 
 ```bash
-npm install brevomorphic-cms-sdk
+npm install @fufulog/brevomorphic-cms-sdk
 ```
 
 ### 2. Set Environment Variables
@@ -19,7 +19,7 @@ npm install brevomorphic-cms-sdk
 Copy the example env and fill in your credentials:
 
 ```bash
-cp node_modules/brevomorphic-cms-sdk/env.example .env
+cp node_modules/@fufulog/brevomorphic-cms-sdk/env.example .env
 ```
 
 Required variables:
@@ -38,7 +38,7 @@ Run the appropriate schema migration for your database (see [Database Setup](#1-
 ### 4. Bootstrap in Your App
 
 ```javascript
-import { EmailTemplateService, EmailTemplateController } from 'brevomorphic-cms-sdk';
+import { EmailTemplateService, EmailTemplateController } from '@fufulog/brevomorphic-cms-sdk';
 import express from 'express';
 
 const emailService = new EmailTemplateService({
@@ -61,11 +61,11 @@ The SDK ships drop-in WYSIWYG editor components for **Svelte** and **React**. Co
 
 ```bash
 # Svelte
-cp node_modules/brevomorphic-cms-sdk/svelte/BrevoWysiwyg.svelte src/components/
+cp node_modules/@fufulog/brevomorphic-cms-sdk/svelte/BrevoWysiwyg.svelte src/components/
 
 # React
-cp node_modules/brevomorphic-cms-sdk/react/BrevoWysiwyg.tsx src/components/
-cp node_modules/brevomorphic-cms-sdk/react/BrevoWysiwyg.css src/components/
+cp node_modules/@fufulog/brevomorphic-cms-sdk/react/BrevoWysiwyg.tsx src/components/
+cp node_modules/@fufulog/brevomorphic-cms-sdk/react/BrevoWysiwyg.css src/components/
 ```
 
 See [WYSIWYG Editor Components](#6-wysiwyg-editor-components) for full usage details.
@@ -128,7 +128,7 @@ To bootstrap the SDK in your application, instantiate `EmailTemplateService` by 
 ### **Recipe A: PostgreSQL (using `pg` Pool)**
 ```javascript
 import pg from 'pg';
-import { EmailTemplateService } from 'brevomorphic-cms-sdk';
+import { EmailTemplateService } from '@fufulog/brevomorphic-cms-sdk';
 
 const pgPool = new pg.Pool({
   connectionString: process.env.DATABASE_URL
@@ -150,7 +150,7 @@ const emailService = new EmailTemplateService({
 ### **Recipe B: MySQL (using `mysql2/promise` Pool)**
 ```javascript
 import mysql from 'mysql2/promise';
-import { EmailTemplateService } from 'brevomorphic-cms-sdk';
+import { EmailTemplateService } from '@fufulog/brevomorphic-cms-sdk';
 
 const mysqlPool = await mysql.createPool({
   host: process.env.DB_HOST,
@@ -175,7 +175,7 @@ const emailService = new EmailTemplateService({
 ```javascript
 import { initializeApp, cert } from 'firebase-admin/app';
 import { getFirestore } from 'firebase-admin/firestore';
-import { EmailTemplateService } from 'brevomorphic-cms-sdk';
+import { EmailTemplateService } from '@fufulog/brevomorphic-cms-sdk';
 
 // Initialize Firebase SDK
 initializeApp({
@@ -204,7 +204,7 @@ Instantiate `EmailTemplateController` by passing your bootstrapped `EmailTemplat
 
 ```javascript
 import express from 'express';
-import { EmailTemplateController } from 'brevomorphic-cms-sdk';
+import { EmailTemplateController } from '@fufulog/brevomorphic-cms-sdk';
 
 const app = express();
 app.use(express.json());

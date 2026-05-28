@@ -1,5 +1,5 @@
 {
-  "name": "brevomorphic-cms-sdk",
+  "name": "@fufulog/brevomorphic-cms-sdk",
   "version": "1.0.0",
   "type": "module",
   "description": "SDK library to bootstrap Brevo email templates and manage local mappings in Postgres, MySQL, or Firestore",

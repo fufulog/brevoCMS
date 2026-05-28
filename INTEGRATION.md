@@ -20,7 +20,7 @@ DB_TYPE="firestore" # or 'postgres' | 'mysql'
 
 ## 2. ESM Target Module Fixes
 
-If your host application is configured to run as an ES Module (`"type": "module"` in `package.json`), you must build the `brevomorphic-cms-sdk` to match ESM:
+If your host application is configured to run as an ES Module (`"type": "module"` in `package.json`), you must build the `@fufulog/brevomorphic-cms-sdk` to match ESM:
 
 1. Add `"type": "module"` to `brevoCMS/package.json` so TypeScript compiles native ES imports/exports.
 2. Compile/rebuild the package:
