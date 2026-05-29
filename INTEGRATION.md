@@ -11,8 +11,8 @@ Make sure to define these keys in the host environment (`.env`):
 ```bash
 # Brevo SMTP Configuration
 BREVO_API_KEY="xkeysib-..."
-DEFAULT_SENDER_EMAIL="info@yourdomain.com"
-DEFAULT_SENDER_NAME="Your Brand Name"
+BREVO_DEFAULT_SENDER_EMAIL="info@yourdomain.com"
+BREVO_DEFAULT_SENDER_NAME="Your Brand Name"
 DB_TYPE="firestore" # or 'postgres' | 'mysql'
 ```
 
@@ -99,3 +99,49 @@ await cmsService.sendEventEmail('user.welcome', email, {
 });
 ```
 The SDK runs outbound event-check safety checks. If the template is unassigned, missing, or inactive (`isActive` is false), the send is safely ignored without breaking transaction flows.
+
+---
+
+## 6. Brevo Template Loops & Object Decomposition
+
+When passing arrays of objects (like tickets or shopping cart items) to Brevo transactional templates, use **Brevo's native template language** (based on Django/Jinja syntax):
+
+### Loop Syntax & Decomposing Properties
+* **Root Scope**: All variables passed via `sendEventEmail` reside under the `params` object (e.g. `params.tickets`).
+* **Loop Declaration**: Loop through the array using `{% for %}` tags:
+  ```django
+  {% for item in params.tickets %}
+    <!-- Decompose attributes directly from the loop item -->
+    <h3>{{ item.name }}</h3>
+    <p>Ticket ID: {{ item.ticketId }}</p>
+    <p>Attendee: {{ item.attendeeName }}</p>
+    <!-- Render QR code dynamically using the standard image tag -->
+    <img src="{{ item.qrCodeUrl }}" width="110" height="110" alt="QR Code" />
+  {% endfor %}
+  ```
+* **Gmail/Email Client Compatibility Warning**: Gmail strips inline `<svg>` blocks and inline base64-encoded images. To guarantee delivery across all devices, pass a hosted/generated PNG dynamic URL (such as GoQR/QRServer) and render it inside a standard `<img />` tag.
+
+### Example Transactional Dispatch (Tickets)
+```typescript
+await cmsService.sendEventEmail('order.tickets', email, {
+  customerName: profile.name,
+  orderId: order.id,
+  appUrl: 'https://yourdomain.com',
+  tickets: [
+    {
+      name: 'VIP Admission Pass',
+      ticketId: 'tkt_VIP123',
+      orderIdShort: 'ORD-1234',
+      dateRange: 'Oct 15 - 17, 2026',
+      timeRange: '10am to 4pm',
+      location: 'Design Center, NY',
+      entryType: 'Multi Entry',
+      isMultiDay: true,
+      purchasedDate: '2026-05-28',
+      attendeeName: 'Jane Doe',
+      qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=220x220&margin=0&data=tkt_VIP123'
+    }
+  ]
+});
+```
+
