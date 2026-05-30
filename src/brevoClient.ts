@@ -158,11 +158,23 @@ export class BrevoClient {
     variables?: Record<string, any>;
   }): Promise<void> {
     try {
-      await this.client.post('/smtp/email', {
+      const replyToEmail = params.variables?.replyToEmail;
+      const replyToName = params.variables?.replyToName;
+
+      const payload: any = {
         templateId: params.templateId,
         to: [{ email: params.to }],
         params: params.variables || {},
-      });
+      };
+
+      if (replyToEmail) {
+        payload.replyTo = {
+          email: replyToEmail,
+          ...(replyToName ? { name: replyToName } : {}),
+        };
+      }
+
+      await this.client.post('/smtp/email', payload);
     } catch (error: any) {
       const msg = error.response?.data?.message || error.message;
       throw new Error(`Failed to send event email via Brevo: ${msg}`);
