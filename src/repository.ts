@@ -1,7 +1,7 @@
 import { SDKConfig, LocalMapping } from './types.js';
 
 export class EmailTemplateRepository {
-  private dbType: 'postgres' | 'mysql' | 'firestore';
+  private dbType: 'postgres' | 'mysql' | 'firestore' | 'custom';
   private dbClient: any;
   private tableName: string;
 
@@ -38,6 +38,9 @@ export class EmailTemplateRepository {
    * Fetch all event-to-template mappings from the local database
    */
   async getAllMappings(): Promise<LocalMapping[]> {
+    if (this.dbType === 'custom') {
+      return this.dbClient.getAllMappings();
+    }
     if (this.dbType === 'firestore') {
       const snapshot = await this.dbClient.collection(this.tableName).get();
       const mappings: LocalMapping[] = [];
@@ -69,6 +72,9 @@ export class EmailTemplateRepository {
    * Fetch mapping for a specific template ID
    */
   async getMappingByTemplateId(templateId: number): Promise<LocalMapping | null> {
+    if (this.dbType === 'custom') {
+      return this.dbClient.getMappingByTemplateId(templateId);
+    }
     if (this.dbType === 'firestore') {
       const doc = await this.dbClient.collection(this.tableName).doc(templateId.toString()).get();
       if (!doc.exists) return null;
@@ -102,6 +108,9 @@ export class EmailTemplateRepository {
    * Assumes we want the active template linked to this event.
    */
   async getActiveMappingByEvent(eventName: string): Promise<LocalMapping | null> {
+    if (this.dbType === 'custom') {
+      return this.dbClient.getActiveMappingByEvent(eventName);
+    }
     if (this.dbType === 'firestore') {
       const snapshot = await this.dbClient
         .collection(this.tableName)
@@ -145,6 +154,9 @@ export class EmailTemplateRepository {
    * Upsert a mapping (insert or update template config)
    */
   async upsertMapping(templateId: number, eventName: string, isActive: boolean): Promise<void> {
+    if (this.dbType === 'custom') {
+      return this.dbClient.upsertMapping(templateId, eventName, isActive);
+    }
     if (this.dbType === 'firestore') {
       await this.dbClient
         .collection(this.tableName)
@@ -193,6 +205,9 @@ export class EmailTemplateRepository {
    * If mapping does not exist, insert blank inactive mapping.
    */
   async insertJITMapping(templateId: number): Promise<void> {
+    if (this.dbType === 'custom') {
+      return this.dbClient.insertJITMapping(templateId);
+    }
     if (this.dbType === 'firestore') {
       const docRef = this.dbClient.collection(this.tableName).doc(templateId.toString());
       const doc = await docRef.get();

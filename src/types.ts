@@ -46,7 +46,7 @@ export interface SDKConfig {
     name?: string;
     email: string;
   };
-  dbType: 'postgres' | 'mysql' | 'firestore';
+  dbType: 'postgres' | 'mysql' | 'firestore' | 'custom';
   /**
    * For 'postgres': an object satisfying { query: (sql, params) => Promise<{ rows: any[] }> } or equivalent
    * For 'mysql': an object satisfying { query: (sql, params) => Promise<[any[], any]> } or equivalent
