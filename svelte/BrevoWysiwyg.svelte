@@ -26,11 +26,11 @@
 -->
 
 <script>
-  import { onMount, createEventDispatcher, tick } from 'svelte';
+  import { onMount, createEventDispatcher, tick } from "svelte";
 
-  export let value = '';
+  export let value = "";
   export let variables = [];
-  export let placeholder = 'Start designing your email template...';
+  export let placeholder = "Start designing your email template...";
   export let disabled = false;
 
   const dispatch = createEventDispatcher();
@@ -38,7 +38,7 @@
   let editorEl;
   let sourceEl;
   let isSourceMode = false;
-  let sourceCode = '';
+  let sourceCode = "";
   let showVariableMenu = false;
   let showHeadingMenu = false;
   let isFocused = false;
@@ -65,20 +65,20 @@
     const raw = editorEl.innerHTML;
     // Restore any accidentally encoded Twig brackets
     const cleaned = raw
-      .replace(/&lbrace;/g, '{')
-      .replace(/&rbrace;/g, '}')
-      .replace(/&#123;/g, '{')
-      .replace(/&#125;/g, '}')
-      .replace(/&#37;/g, '%')
-      .replace(/&percnt;/g, '%');
+      .replace(/&lbrace;/g, "{")
+      .replace(/&rbrace;/g, "}")
+      .replace(/&#123;/g, "{")
+      .replace(/&#125;/g, "}")
+      .replace(/&#37;/g, "%")
+      .replace(/&percnt;/g, "%");
     value = cleaned;
-    dispatch('change', cleaned);
+    dispatch("change", cleaned);
   }
 
   function syncFromSource() {
     sourceCode = sourceEl?.value ?? sourceCode;
     value = sourceCode;
-    dispatch('change', value);
+    dispatch("change", value);
   }
 
   async function toggleSourceMode() {
@@ -108,24 +108,24 @@
 
   function updateActiveFormats() {
     activeFormats = {
-      bold: document.queryCommandState('bold'),
-      italic: document.queryCommandState('italic'),
-      underline: document.queryCommandState('underline'),
-      strikeThrough: document.queryCommandState('strikeThrough'),
-      insertOrderedList: document.queryCommandState('insertOrderedList'),
-      insertUnorderedList: document.queryCommandState('insertUnorderedList'),
+      bold: document.queryCommandState("bold"),
+      italic: document.queryCommandState("italic"),
+      underline: document.queryCommandState("underline"),
+      strikeThrough: document.queryCommandState("strikeThrough"),
+      insertOrderedList: document.queryCommandState("insertOrderedList"),
+      insertUnorderedList: document.queryCommandState("insertUnorderedList"),
     };
   }
 
   function insertHeading(tag) {
-    execCmd('formatBlock', tag);
+    execCmd("formatBlock", tag);
     showHeadingMenu = false;
   }
 
   function insertLink() {
     if (isSourceMode || disabled) return;
-    const url = prompt('Enter URL:');
-    if (url) execCmd('createLink', url);
+    const url = prompt("Enter URL:");
+    if (url) execCmd("createLink", url);
   }
 
   function insertVariable(variable) {
@@ -141,17 +141,18 @@
       sourceCode = before + twigExpr + after;
       sourceEl.value = sourceCode;
       value = sourceCode;
-      dispatch('change', value);
+      dispatch("change", value);
       // Restore cursor after inserted text
       tick().then(() => {
-        sourceEl.selectionStart = sourceEl.selectionEnd = start + twigExpr.length;
+        sourceEl.selectionStart = sourceEl.selectionEnd =
+          start + twigExpr.length;
         sourceEl.focus();
       });
     } else if (editorEl) {
       // Insert into contentEditable at cursor position
       editorEl.focus();
       // Use insertHTML to preserve Twig brackets exactly
-      document.execCommand('insertHTML', false, twigExpr);
+      document.execCommand("insertHTML", false, twigExpr);
       syncFromEditor();
     }
 
@@ -172,7 +173,7 @@
   }
 
   function closeMenus(e) {
-    if (!e.target.closest('.brevo-dropdown')) {
+    if (!e.target.closest(".brevo-dropdown")) {
       showVariableMenu = false;
       showHeadingMenu = false;
     }
@@ -181,7 +182,11 @@
 
 <svelte:window on:click={closeMenus} />
 
-<div class="brevo-wysiwyg" class:brevo-wysiwyg--disabled={disabled} class:brevo-wysiwyg--focused={isFocused}>
+<div
+  class="brevo-wysiwyg"
+  class:brevo-wysiwyg--disabled={disabled}
+  class:brevo-wysiwyg--focused={isFocused}
+>
   <!-- Toolbar -->
   <div class="brevo-toolbar">
     <div class="brevo-toolbar__group">
@@ -190,36 +195,36 @@
         class="brevo-btn"
         class:brevo-btn--active={activeFormats.bold}
         title="Bold"
-        on:click={() => execCmd('bold')}
-        {disabled}
-      ><strong>B</strong></button>
+        on:click={() => execCmd("bold")}
+        {disabled}><strong>B</strong></button
+      >
 
       <button
         type="button"
         class="brevo-btn"
         class:brevo-btn--active={activeFormats.italic}
         title="Italic"
-        on:click={() => execCmd('italic')}
-        {disabled}
-      ><em>I</em></button>
+        on:click={() => execCmd("italic")}
+        {disabled}><em>I</em></button
+      >
 
       <button
         type="button"
         class="brevo-btn"
         class:brevo-btn--active={activeFormats.underline}
         title="Underline"
-        on:click={() => execCmd('underline')}
-        {disabled}
-      ><u>U</u></button>
+        on:click={() => execCmd("underline")}
+        {disabled}><u>U</u></button
+      >
 
       <button
         type="button"
         class="brevo-btn"
         class:brevo-btn--active={activeFormats.strikeThrough}
         title="Strikethrough"
-        on:click={() => execCmd('strikeThrough')}
-        {disabled}
-      ><s>S</s></button>
+        on:click={() => execCmd("strikeThrough")}
+        {disabled}><s>S</s></button
+      >
     </div>
 
     <div class="brevo-toolbar__divider"></div>
@@ -230,16 +235,27 @@
         type="button"
         class="brevo-btn"
         title="Headings"
-        on:click|stopPropagation={() => { showHeadingMenu = !showHeadingMenu; showVariableMenu = false; }}
-        {disabled}
-      >H ▾</button>
+        on:click|stopPropagation={() => {
+          showHeadingMenu = !showHeadingMenu;
+          showVariableMenu = false;
+        }}
+        {disabled}>H ▾</button
+      >
 
       {#if showHeadingMenu}
         <div class="brevo-dropdown__menu">
-          <button type="button" on:click={() => insertHeading('h1')}>Heading 1</button>
-          <button type="button" on:click={() => insertHeading('h2')}>Heading 2</button>
-          <button type="button" on:click={() => insertHeading('h3')}>Heading 3</button>
-          <button type="button" on:click={() => insertHeading('p')}>Paragraph</button>
+          <button type="button" on:click={() => insertHeading("h1")}
+            >Heading 1</button
+          >
+          <button type="button" on:click={() => insertHeading("h2")}
+            >Heading 2</button
+          >
+          <button type="button" on:click={() => insertHeading("h3")}
+            >Heading 3</button
+          >
+          <button type="button" on:click={() => insertHeading("p")}
+            >Paragraph</button
+          >
         </div>
       {/if}
     </div>
@@ -252,31 +268,55 @@
         class="brevo-btn"
         class:brevo-btn--active={activeFormats.insertUnorderedList}
         title="Bullet List"
-        on:click={() => execCmd('insertUnorderedList')}
-        {disabled}
-      >• List</button>
+        on:click={() => execCmd("insertUnorderedList")}
+        {disabled}>• List</button
+      >
 
       <button
         type="button"
         class="brevo-btn"
         class:brevo-btn--active={activeFormats.insertOrderedList}
         title="Numbered List"
-        on:click={() => execCmd('insertOrderedList')}
-        {disabled}
-      >1. List</button>
+        on:click={() => execCmd("insertOrderedList")}
+        {disabled}>1. List</button
+      >
     </div>
 
     <div class="brevo-toolbar__divider"></div>
 
     <div class="brevo-toolbar__group">
-      <button type="button" class="brevo-btn" title="Align Left" on:click={() => execCmd('justifyLeft')} {disabled}>⫷</button>
-      <button type="button" class="brevo-btn" title="Align Center" on:click={() => execCmd('justifyCenter')} {disabled}>⫿</button>
-      <button type="button" class="brevo-btn" title="Align Right" on:click={() => execCmd('justifyRight')} {disabled}>⫸</button>
+      <button
+        type="button"
+        class="brevo-btn"
+        title="Align Left"
+        on:click={() => execCmd("justifyLeft")}
+        {disabled}>⫷</button
+      >
+      <button
+        type="button"
+        class="brevo-btn"
+        title="Align Center"
+        on:click={() => execCmd("justifyCenter")}
+        {disabled}>⫿</button
+      >
+      <button
+        type="button"
+        class="brevo-btn"
+        title="Align Right"
+        on:click={() => execCmd("justifyRight")}
+        {disabled}>⫸</button
+      >
     </div>
 
     <div class="brevo-toolbar__divider"></div>
 
-    <button type="button" class="brevo-btn" title="Insert Link" on:click={insertLink} {disabled}>🔗</button>
+    <button
+      type="button"
+      class="brevo-btn"
+      title="Insert Link"
+      on:click={insertLink}
+      {disabled}>🔗</button
+    >
 
     <!-- Variable injector -->
     {#if variables.length > 0}
@@ -286,16 +326,20 @@
           type="button"
           class="brevo-btn brevo-btn--accent"
           title="Insert Variable"
-          on:click|stopPropagation={() => { showVariableMenu = !showVariableMenu; showHeadingMenu = false; }}
-          {disabled}
-        >&#123;&#123; &#125;&#125; Insert Variable ▾</button>
+          on:click|stopPropagation={() => {
+            showVariableMenu = !showVariableMenu;
+            showHeadingMenu = false;
+          }}
+          {disabled}>&#123;&#123; &#125;&#125; Insert Variable ▾</button
+        >
 
         {#if showVariableMenu}
           <div class="brevo-dropdown__menu brevo-dropdown__menu--variables">
             {#each variables as variable}
               <button type="button" on:click={() => insertVariable(variable)}>
                 <span class="brevo-var-label">{variable.label}</span>
-                <code class="brevo-var-key">{'{{ ' + variable.key + ' }}'}</code>
+                <code class="brevo-var-key">{"{{ " + variable.key + " }}"}</code
+                >
               </button>
             {/each}
           </div>
@@ -311,8 +355,8 @@
       class:brevo-btn--active={isSourceMode}
       title="Toggle Source View"
       on:click={toggleSourceMode}
-      {disabled}
-    >{isSourceMode ? '✎ Visual' : '&lt;/&gt; Source'}</button>
+      {disabled}>{isSourceMode ? "✎ Visual" : "</> Source"}</button
+    >
   </div>
 
   <!-- Editor Area -->
@@ -364,7 +408,7 @@
     --brevo-btn-hover: #2a2a4a;
     --brevo-btn-active: #3730a3;
     --brevo-radius: 8px;
-    --brevo-font: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+    --brevo-font: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
 
     font-family: var(--brevo-font);
     border: 1.5px solid var(--brevo-border);
@@ -479,8 +523,14 @@
   }
 
   @keyframes brevo-dropdown-in {
-    from { opacity: 0; transform: translateY(-4px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+      opacity: 0;
+      transform: translateY(-4px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .brevo-dropdown__menu button {
@@ -541,12 +591,29 @@
     pointer-events: none;
   }
 
-  .brevo-editor :global(h1) { font-size: 1.8em; font-weight: 700; margin: 0.4em 0; }
-  .brevo-editor :global(h2) { font-size: 1.4em; font-weight: 600; margin: 0.4em 0; }
-  .brevo-editor :global(h3) { font-size: 1.15em; font-weight: 600; margin: 0.4em 0; }
-  .brevo-editor :global(a) { color: var(--brevo-accent-hover); text-decoration: underline; }
+  .brevo-editor :global(h1) {
+    font-size: 1.8em;
+    font-weight: 700;
+    margin: 0.4em 0;
+  }
+  .brevo-editor :global(h2) {
+    font-size: 1.4em;
+    font-weight: 600;
+    margin: 0.4em 0;
+  }
+  .brevo-editor :global(h3) {
+    font-size: 1.15em;
+    font-weight: 600;
+    margin: 0.4em 0;
+  }
+  .brevo-editor :global(a) {
+    color: var(--brevo-accent-hover);
+    text-decoration: underline;
+  }
   .brevo-editor :global(ul),
-  .brevo-editor :global(ol) { padding-left: 1.6em; }
+  .brevo-editor :global(ol) {
+    padding-left: 1.6em;
+  }
 
   /* ── Source ── */
   .brevo-source {
@@ -557,7 +624,7 @@
     border: none;
     background: #0d1117;
     color: #c9d1d9;
-    font-family: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    font-family: "JetBrains Mono", "Fira Code", "Cascadia Code", monospace;
     font-size: 13px;
     line-height: 1.65;
     resize: vertical;

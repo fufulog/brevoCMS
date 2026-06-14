@@ -187,7 +187,6 @@ export default function BrevoWysiwyg({
 
   return (
     <div className={wrapperClasses}>
-      {/* ── Toolbar ── */}
       <div className="brevo-toolbar">
         <div className="brevo-toolbar__group">
           <button
