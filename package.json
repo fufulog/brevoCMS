@@ -1,10 +1,31 @@
 {
   "name": "@fufulog/brevomorphic-cms-sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "type": "module",
   "description": "SDK library to bootstrap Brevo email templates and manage local mappings in Postgres, MySQL, or Firestore",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./svelte/BrevoWysiwyg.svelte": {
+      "types": "./svelte/BrevoWysiwyg.svelte.d.ts",
+      "import": "./svelte/BrevoWysiwyg.svelte",
+      "svelte": "./svelte/BrevoWysiwyg.svelte",
+      "default": "./svelte/BrevoWysiwyg.svelte"
+    },
+    "./react/BrevoWysiwyg": {
+      "types": "./react/BrevoWysiwyg.d.ts",
+      "import": "./react/BrevoWysiwyg.tsx",
+      "default": "./react/BrevoWysiwyg.tsx"
+    },
+    "./react/BrevoWysiwyg.css": {
+      "default": "./react/BrevoWysiwyg.css"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "test": "tsx tests/sdk.test.ts",
@@ -28,9 +49,11 @@
   "devDependencies": {
     "@types/node": "^20.11.30",
     "@types/express": "^4.17.21",
+    "@types/react": "^18.2.66",
     "typescript": "^5.4.3",
     "tsx": "^4.7.1",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "react": "^18.2.0"
   },
   "publishConfig": {
     "access": "public"
