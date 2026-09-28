@@ -1,5 +1,22 @@
-import { Request, Response, Router } from 'express';
+import type { Request, Response, Router } from 'express';
+import { createRequire } from 'node:module';
 import { EmailTemplateService } from './service.js';
+
+let cachedExpressRouter: any;
+
+function getExpressRouter(): any {
+  if (cachedExpressRouter) return cachedExpressRouter;
+  try {
+    const require = createRequire(import.meta.url);
+    const express = require('express');
+    cachedExpressRouter = express.Router;
+    return cachedExpressRouter;
+  } catch {
+    throw new Error(
+      "The 'express' package is required to use EmailTemplateController. Please install express in your project: npm install express"
+    );
+  }
+}
 
 export class EmailTemplateController {
   private service: EmailTemplateService;
@@ -12,8 +29,8 @@ export class EmailTemplateController {
    * Generates a fully configured Express Router.
    * Can be directly mounted into any Express app: `app.use('/api/cms', controller.getRouter())`
    */
-  getRouter(): Router {
-    const router = Router();
+  getRouter(customRouter?: Router): Router {
+    const router = customRouter || getExpressRouter()();
 
     // Standard express mapping
     router.get('/templates', this.listTemplates.bind(this));

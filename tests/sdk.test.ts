@@ -221,6 +221,20 @@ async function runTests() {
     }
   });
 
+  // 5. CONTROLLER TESTS
+  runTest('Controller - getRouter with Express', async () => {
+    const mockPgClient: SQLClient = { query: async () => ({ rows: [] }) };
+    const service = new EmailTemplateService({
+      brevoApiKey: 'dummy-key',
+      defaultSender: { email: 'test@example.com' },
+      dbType: 'postgres',
+      dbClient: mockPgClient
+    });
+    const controller = new EmailTemplateController(service);
+    const router = controller.getRouter();
+    assert(typeof router === 'function' || typeof router === 'object', 'Router should be created');
+  });
+
   // Wait a small duration to let asynchronous assertions print out
   setTimeout(() => {
     console.log(`\n📊 Tests complete. Total Passed: ${testPassedCount}, Failed: ${testFailedCount}`);

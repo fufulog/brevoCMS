@@ -1,6 +1,6 @@
 {
   "name": "@fufulog/brevomorphic-cms-sdk",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "type": "module",
   "description": "SDK library to bootstrap Brevo email templates and manage local mappings in Postgres, MySQL, or Firestore",
   "main": "dist/index.js",
@@ -10,6 +10,11 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "default": "./dist/index.js"
+    },
+    "./express": {
+      "types": "./dist/controller.d.ts",
+      "import": "./dist/controller.js",
+      "default": "./dist/controller.js"
     },
     "./svelte/BrevoWysiwyg.svelte": {
       "types": "./svelte/BrevoWysiwyg.svelte.d.ts",
@@ -57,5 +62,13 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "peerDependencies": {
+    "express": "^4.19.2 || ^5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "express": {
+      "optional": true
+    }
   }
 }
