@@ -70,7 +70,17 @@
       .replace(/&#123;/g, "{")
       .replace(/&#125;/g, "}")
       .replace(/&#37;/g, "%")
-      .replace(/&percnt;/g, "%");
+      .replace(/&percnt;/g, "%")
+      // innerHTML escapes > < & and quotes in text, which breaks Twig conditions like {% if x > 1 %}
+      .replace(/\{%[\s\S]*?%\}|\{\{[\s\S]*?\}\}/g, (tag) =>
+        tag
+          .replace(/&gt;/g, ">")
+          .replace(/&lt;/g, "<")
+          .replace(/&quot;/g, '"')
+          .replace(/&#39;/g, "'")
+          .replace(/&nbsp;/g, " ")
+          .replace(/&amp;/g, "&")
+      );
     value = cleaned;
     dispatch("change", cleaned);
   }

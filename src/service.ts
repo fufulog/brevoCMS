@@ -1,4 +1,5 @@
 import { BrevoClient } from './brevoClient.js';
+import { restoreTwigTags } from './twig.js';
 import { EmailTemplateRepository } from './repository.js';
 import { SDKConfig, CombinedTemplate, CreateTemplateInput, UpdateTemplateInput, BrevoSender } from './types.js';
 
@@ -129,6 +130,9 @@ export class EmailTemplateService {
       throw new Error('HTML content must be greater than 10 characters');
     }
 
+    // Editors that read innerHTML send Twig operators as entities (&gt;), which Brevo rejects
+    const htmlContent = restoreTwigTags(input.htmlContent);
+
     const sender: BrevoSender = {
       email: input.sender?.email || this.defaultSender.email,
       name: input.sender?.name || this.defaultSender.name || '',
@@ -139,7 +143,7 @@ export class EmailTemplateService {
       templateName: input.templateName,
       subject: input.subject,
       sender: sender,
-      htmlContent: input.htmlContent,
+      htmlContent,
       isActive: input.isActive,
     });
 
@@ -153,7 +157,7 @@ export class EmailTemplateService {
       eventName: input.eventName || '',
       isActive: input.isActive,
       sender: sender,
-      htmlContent: input.htmlContent,
+      htmlContent,
     };
   }
 
@@ -169,7 +173,7 @@ export class EmailTemplateService {
       templateName: bt.name,
       subject: bt.subject,
       sender: bt.sender || this.defaultSender,
-      htmlContent: bt.htmlContent || '',
+      htmlContent: restoreTwigTags(bt.htmlContent || ''),
       isActive: isActive,
     });
 

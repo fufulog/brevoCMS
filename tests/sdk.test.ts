@@ -2,6 +2,7 @@ import { EmailTemplateRepository } from '../src/repository.js';
 import { EmailTemplateService } from '../src/service.js';
 import { EmailTemplateController } from '../src/controller.js';
 import { SQLClient, LocalMapping } from '../src/types.js';
+import { restoreTwigTags } from '../src/twig.js';
 
 // Setup basic assertion helper
 function assert(condition: boolean, message: string) {
@@ -221,7 +222,43 @@ async function runTests() {
     }
   });
 
-  // 5. CONTROLLER TESTS
+  // 5. TWIG ENTITY RESTORE TESTS
+  runTest('restoreTwigTags - Decodes operators inside Twig tags only', () => {
+    const input = '<p>A &gt; B &amp; C</p>{% if params.count &gt; 1 %}x{% endif %}{{ params.a &amp;&amp; params.b }}{% if params.name == &quot;Jo&quot; %}y{% endif %}';
+    const output = restoreTwigTags(input);
+    assert(output.includes('<p>A &gt; B &amp; C</p>'), 'HTML text outside tags keeps its escaping');
+    assert(output.includes('{% if params.count > 1 %}'), 'Comparison operator is restored');
+    assert(output.includes('{{ params.a && params.b }}'), 'Ampersands are restored inside output tags');
+    assert(output.includes('{% if params.name == "Jo" %}'), 'Quotes are restored');
+  });
+
+  runTest('restoreTwigTags - Restores encoded brackets', () => {
+    assert(restoreTwigTags('&#123;&#123; params.x &#125;&#125;') === '{{ params.x }}', 'Numeric brace entities are restored');
+    assert(restoreTwigTags('&lbrace;&#37; if a &gt; 1 &#37;&rbrace;') === '{% if a > 1 %}', 'Encoded tag delimiters and operators are restored');
+  });
+
+  runTest('Service - updateTemplate sends restored Twig to Brevo', async () => {
+    const mockPgClient: SQLClient = { query: async () => ({ rows: [] }) };
+    const service = new EmailTemplateService({
+      brevoApiKey: 'dummy-key',
+      defaultSender: { email: 'test@example.com' },
+      dbType: 'postgres',
+      dbClient: mockPgClient
+    });
+    let sentHtml = '';
+    (service as any).brevoClient = { updateTemplate: async (_id: number, params: { htmlContent: string }) => { sentHtml = params.htmlContent; } };
+    const result = await service.updateTemplate(7, {
+      templateName: 'Invite',
+      subject: 'You have a ticket',
+      htmlContent: '<h1>{% if params.ticketCount &gt; 1 %}Tickets{% else %}Ticket{% endif %}</h1>',
+      eventName: 'ticket.invite',
+      isActive: true
+    });
+    assert(sentHtml === '<h1>{% if params.ticketCount > 1 %}Tickets{% else %}Ticket{% endif %}</h1>', 'Brevo receives the decoded condition');
+    assert(result.htmlContent === sentHtml, 'Returned template matches what was sent');
+  });
+
+  // 6. CONTROLLER TESTS
   runTest('Controller - getRouter with Express', async () => {
     const mockPgClient: SQLClient = { query: async () => ({ rows: [] }) };
     const service = new EmailTemplateService({
